@@ -1,0 +1,142 @@
+package calendar.joybar.com.calendar_library.fragment;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import calendar.joybar.com.calendar_library.R;
+import calendar.joybar.com.calendar_library.adapter.CalendarGridViewAdapter;
+import calendar.joybar.com.calendar_library.controller.CalendarDateController;
+import calendar.joybar.com.calendar_library.data.CalendarDate;
+import calendar.joybar.com.calendar_library.utils.DateUtils;
+
+/**
+ * Created by joybar on 4/27/16.
+ */
+public class CalendarViewFragment extends Fragment {
+
+    private static final String YEAR = "year";
+    private static final String MONTH = "month";
+    private int mYear;
+    private int mMonth;
+    private int mCurrentPosition;
+    private int mLastPosition;
+    private GridView mGridView;
+    private OnDateClickListener onDateClickListener;
+
+
+    public CalendarViewFragment() {
+    }
+
+    public static CalendarViewFragment newInstance(int year, int month) {
+        CalendarViewFragment fragment = new CalendarViewFragment();
+        Bundle args = new Bundle();
+        args.putInt(YEAR, year);
+        args.putInt(MONTH, month);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            onDateClickListener = (OnDateClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + "must implement OnDateClickListener");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mYear = getArguments().getInt(YEAR);
+            mMonth = getArguments().getInt(MONTH);
+
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+        mGridView = (GridView) view.findViewById(R.id.gv_calendar);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        List<CalendarDate> mListDataCalendar = new ArrayList<>();//日历数据
+        mListDataCalendar = CalendarDateController.getCalendarDate(mYear, mMonth);
+        mGridView.setAdapter(new CalendarGridViewAdapter(mListDataCalendar));
+        final List<CalendarDate> finalMListDataCalendar = mListDataCalendar;
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CalendarDate calendarDate = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData().get(position);
+                int year = calendarDate.getYear();
+                int month = calendarDate.getMonth();
+                int day = calendarDate.getDay();
+                if (finalMListDataCalendar.get(position).isInThisMOnth()) {
+                    onDateClickListener.OnDateClick(year, month, day);
+                }
+
+                if (mCurrentPosition != position) {
+                    if (finalMListDataCalendar.get(position).isInThisMOnth()) {
+                        View viewCurrent = parent.getChildAt(position);
+                        viewCurrent.setBackgroundResource(R.drawable.calendar_date_shape_circle_green);
+                        View viewLast = parent.getChildAt(mCurrentPosition);
+                        viewLast.setBackgroundResource(R.drawable.calendar_date_shape_circle_transparent);
+                        mLastPosition = mCurrentPosition;
+                        mCurrentPosition = position;
+                    }
+
+                }
+
+
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //需要默认选中当天
+                List<CalendarDate> mListData = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData();
+                int count = mListData.size();
+                for (int i = 0; i < count; i++) {
+                    if (mListData.get(i).getDay() == DateUtils.getDay()
+                            && mListData.get(i).getMonth() == DateUtils.getMonth()
+                            && mListData.get(i).getYear() == DateUtils.getYear()) {
+                        if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMOnth()) {
+                            mGridView.getChildAt(i).setBackgroundResource(R.drawable.calendar_date_shape_circle_green);
+                            mCurrentPosition = i;
+                        }
+                    }
+                }
+            }
+        }, 100);
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+    }
+
+    public interface OnDateClickListener {
+        public void OnDateClick(int year, int month, int day);
+    }
+}
