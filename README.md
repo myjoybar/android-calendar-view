@@ -34,4 +34,4 @@ Easy to use, powerful, easy to expand the android calendar view library.使用�
 }
 ```
 
- ![image](https://github.com/myjoybar/android-calendar-view/blob/master/img/demo.png)  
+ ![image](https://github.com/myjoybar/android-calendar-view/blob/master/img/demo.gif)  
