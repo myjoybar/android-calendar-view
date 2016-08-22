@@ -8,8 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import calendar.joybar.com.calendar_library.fragment.CalendarViewFragment;
-import calendar.joybar.com.calendar_library.fragment.CalendarViewPagerFragment;
+import com.joybar.xiaoyou.calendar.fragment.CalendarViewFragment;
+import com.joybar.xiaoyou.calendar.fragment.CalendarViewPagerFragment;
 
 public class MainActivity extends AppCompatActivity implements
         CalendarViewPagerFragment.OnPageChangeListener,
