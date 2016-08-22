@@ -11,26 +11,21 @@ import android.widget.TextView;
 import calendar.joybar.com.calendar_library.fragment.CalendarViewFragment;
 import calendar.joybar.com.calendar_library.fragment.CalendarViewPagerFragment;
 
-public class MainActivity extends AppCompatActivity implements CalendarViewPagerFragment.OnPageChangeListener,CalendarViewFragment.OnDateClickListener {
-
+public class MainActivity extends AppCompatActivity implements
+        CalendarViewPagerFragment.OnPageChangeListener,
+        CalendarViewFragment.OnDateClickListener {
     private TextView tv_date;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv_date = (TextView) findViewById(R.id.tv_date);
-
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction tx = fm.beginTransaction();
         Fragment fragment = new CalendarViewPagerFragment();
         tx.add(R.id.fl_content, fragment);
         tx.commit();
     }
-
-
-
-
     @Override
     public void OnDateClick(int year, int month, int day) {
         tv_date.setText(year+"-"+month+"-"+day);
