@@ -2,6 +2,7 @@ package com.joybar.librarycalendar.controller;
 
 
 import com.joybar.librarycalendar.data.CalendarDate;
+import com.joybar.librarycalendar.data.CalendarSimpleDate;
 import com.joybar.librarycalendar.utils.CalendarUtils;
 
 import java.text.ParseException;
@@ -16,9 +17,9 @@ public class CalendarDateController {
 
     public static List<CalendarDate> getCalendarDate(int year, int month) {
         List<CalendarDate> mListDate = new ArrayList<>();
-        List<CalendarUtils.CalendarDate> list = null;
+        List<CalendarSimpleDate> list = null;
         try {
-            list = CalendarUtils.getEverdayOfMonth(year, month);
+            list = CalendarUtils.getEverydayOfMonth(year, month);
         } catch (ParseException e) {
             e.printStackTrace();
         }

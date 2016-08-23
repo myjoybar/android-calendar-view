@@ -1,5 +1,7 @@
 package com.joybar.librarycalendar.utils;
 
+import com.joybar.librarycalendar.data.CalendarSimpleDate;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -84,8 +86,8 @@ public class CalendarUtils {
      * @return
      * @throws ParseException
      */
-    public static List<CalendarDate> getEverdayOfMonth(int year, int month)throws ParseException {
-        List<CalendarDate> list = new ArrayList<>();
+    public static List<CalendarSimpleDate> getEverydayOfMonth(int year, int month)throws ParseException {
+        List<CalendarSimpleDate> list = new ArrayList<>();
         int count = getdataCount(year, month); //获取当月的天数
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -110,14 +112,14 @@ public class CalendarUtils {
         for (int i = 0; i < begin-1; i++) {
         //每月第一天为星期一则不添加
             if(begin!=1){
-                CalendarDate calendarDate = new  CalendarDate(yearOfLastMonth,monthOfLastMonth,dayOfLastMonth-begin+i+2);
+                CalendarSimpleDate calendarDate = new CalendarSimpleDate(yearOfLastMonth,monthOfLastMonth,dayOfLastMonth-begin+i+2);
                 list.add(calendarDate);
             }
 
         }
         //填补本月的数据
         for (int i = 1; i <= count; i++) {
-            CalendarDate calendarDate = new  CalendarDate(year,month,i);
+            CalendarSimpleDate calendarDate = new  CalendarSimpleDate(year,month,i);
             list.add(calendarDate);
             cal.setTime(sdf.parse(year + "-" + month + "-" + i));
 
@@ -126,58 +128,18 @@ public class CalendarUtils {
         for (int i = 1; i <=(7- (begin-1+count)%7); i++) {
            if ((7- (begin-1+count)%7) != 0&&(7- (begin-1+count)%7) != 7 ) {
 
-                int nextyear = year;
+                int nextYear = year;
                 int nextMonth = (month+1)%12;
                 if(nextMonth==1){
-                    nextyear=nextyear+1;
+                    nextYear=nextYear+1;
                 }
 
-                CalendarDate calendarDate = new  CalendarDate(nextyear,nextMonth,i);
+               CalendarSimpleDate calendarDate = new  CalendarSimpleDate(nextYear,nextMonth,i);
 
                 list.add(calendarDate);
             }
         }
         return list;
-    }
-
-
-
-
-    public static  class CalendarDate{
-
-        private int year;
-        private int month;
-        private int day;
-
-        public int getYear() {
-            return year;
-        }
-
-        public void setYear(int year) {
-            this.year = year;
-        }
-
-        public int getMonth() {
-            return month;
-        }
-
-        public void setMonth(int month) {
-            this.month = month;
-        }
-
-        public int getDay() {
-            return day;
-        }
-
-        public void setDay(int day) {
-            this.day = day;
-        }
-
-        public CalendarDate(int year, int month, int day) {
-            this.year = year;
-            this.month = month;
-            this.day = day;
-        }
     }
 
 }

@@ -105,7 +105,7 @@ public class DateUtils {
     /**
      * 日期格式字符串转换成时间戳
      *
-     * @param date   字符串日期 “2016-02-26 12:00:00”
+     * @param date_str   字符串日期 “2016-02-26 12:00:00”
      * @param format 如：yyyy-MM-dd HH:mm:ss
      * @return
      */
@@ -193,7 +193,6 @@ public class DateUtils {
      *
      * @param year
      * @param month
-     * @param day
      * @return
      */
     public static boolean isAfterThisMonth(int year, int month) {
