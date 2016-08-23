@@ -15,7 +15,9 @@ import com.joybar.librarycalendar.fragment.CalendarViewPagerFragment;
 public class MainActivity extends AppCompatActivity implements
         CalendarViewPagerFragment.OnPageChangeListener,
         CalendarViewFragment.OnDateClickListener {
+
     private TextView tv_date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,13 +29,14 @@ public class MainActivity extends AppCompatActivity implements
         tx.add(R.id.fl_content, fragment);
         tx.commit();
     }
+
     @Override
     public void OnDateClick(int year, int month, int day) {
-        tv_date.setText(year+"-"+month+"-"+day);
+        tv_date.setText(year + "-" + month + "-" + day);
     }
 
     @Override
     public void OnPageChangeOrClick(int year, int month) {
-        tv_date.setText(year+"-"+month);
+        tv_date.setText(year + "-" + month);
     }
 }

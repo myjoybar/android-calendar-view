@@ -12,17 +12,19 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
 # 使用步骤
 # Gradle Dependency
 ####  Add the library to your project build.gradle
-```
+```gradle
   compile 'com.joybar.calendar:librarycalendar:1.0.0'
 ```
 ## Sample Usage
 实现OnPageChangeListener和OnDateClickListener接口
 
-```
-  public class MainActivity extends AppCompatActivity implements 
+```java
+  public class MainActivity extends AppCompatActivity implements
         CalendarViewPagerFragment.OnPageChangeListener,
         CalendarViewFragment.OnDateClickListener {
+    
     private TextView tv_date;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,14 +36,15 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
         tx.add(R.id.fl_content, fragment);
         tx.commit();
     }
+
     @Override
     public void OnDateClick(int year, int month, int day) {
-        tv_date.setText(year+"-"+month+"-"+day);
+        tv_date.setText(year + "-" + month + "-" + day);
     }
 
     @Override
     public void OnPageChangeOrClick(int year, int month) {
-        tv_date.setText(year+"-"+month);
+        tv_date.setText(year + "-" + month);
     }
 }
 ```
