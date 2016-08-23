@@ -90,12 +90,12 @@ public class CalendarViewFragment extends Fragment {
                 int year = calendarDate.getYear();
                 int month = calendarDate.getMonth();
                 int day = calendarDate.getDay();
-                if (finalMListDataCalendar.get(position).isInThisMOnth()) {
+                if (finalMListDataCalendar.get(position).isInThisMonth()) {
                     onDateClickListener.OnDateClick(year, month, day);
                 }
 
                 if (mCurrentPosition != position) {
-                    if (finalMListDataCalendar.get(position).isInThisMOnth()) {
+                    if (finalMListDataCalendar.get(position).isInThisMonth()) {
                         View viewCurrent = parent.getChildAt(position);
                         viewCurrent.setBackgroundResource(R.drawable.calendar_date_shape_circle_green);
                         View viewLast = parent.getChildAt(mCurrentPosition);
@@ -120,7 +120,7 @@ public class CalendarViewFragment extends Fragment {
                     if (mListData.get(i).getDay() == DateUtils.getDay()
                             && mListData.get(i).getMonth() == DateUtils.getMonth()
                             && mListData.get(i).getYear() == DateUtils.getYear()) {
-                        if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMOnth()) {
+                        if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMonth()) {
                             mGridView.getChildAt(i).setBackgroundResource(R.drawable.calendar_date_shape_circle_green);
                             mCurrentPosition = i;
                         }

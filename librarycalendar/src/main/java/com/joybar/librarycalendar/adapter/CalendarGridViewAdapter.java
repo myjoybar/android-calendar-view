@@ -61,7 +61,7 @@ public class CalendarGridViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.tv_day.setText(mListData.get(position).getDay()+"");
-        if(mListData.get(position).isInThisMOnth()){
+        if(mListData.get(position).isInThisMonth()){
             viewHolder.tv_day.setTextColor(Color.parseColor("#000000"));
         }else{
             viewHolder.tv_day.setTextColor(Color.parseColor("#D7D7D7"));

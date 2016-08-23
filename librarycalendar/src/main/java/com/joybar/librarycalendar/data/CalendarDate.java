@@ -8,14 +8,14 @@ public class CalendarDate {
     private int year;
     private int month;
     private int day;
-    private boolean isInThisMOnth; //是否在当月
+    private boolean isInThisMonth; //是否在当月
     private boolean isSelect;//是否被选中
 
     public CalendarDate(int year, int month, int day, boolean isInThisMOnth, boolean isSelect) {
         this.year = year;
         this.month = month;
         this.day = day;
-        this.isInThisMOnth = isInThisMOnth;
+        this.isInThisMonth = isInThisMOnth;
         this.isSelect = isSelect;
     }
 
@@ -36,12 +36,12 @@ public class CalendarDate {
     }
 
 
-    public boolean isInThisMOnth() {
-        return isInThisMOnth;
+    public boolean isInThisMonth() {
+        return isInThisMonth;
     }
 
-    public void setIsInThisMOnth(boolean isInThisMOnth) {
-        this.isInThisMOnth = isInThisMOnth;
+    public void setIsInThisMonth(boolean isInThisMonth) {
+        this.isInThisMonth = isInThisMonth;
     }
 
     public boolean isSelect() {
