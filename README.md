@@ -13,7 +13,7 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
 # Gradle Dependency
 ####  Add the library to your project build.gradle
 ```gradle
-  compile 'com.joybar.calendar:librarycalendar:1.0.0'
+  compile 'com.joybar.calendar:librarycalendar:1.0.2'
 ```
 ## Sample Usage
 实现OnPageChangeListener和OnDateClickListener接口
