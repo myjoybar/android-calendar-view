@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/selector_active_calendar_grid_item"
+    android:insetTop="50dp"
+    android:insetLeft="50dp"
+    android:insetBottom="50dp"
+    android:insetRight="50dp" />
