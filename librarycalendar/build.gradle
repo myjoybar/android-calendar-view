@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.0.2" //需更改，这个是Library的版本后，每次更新的时候，版本需要不一样
+version = "1.0.3" //需更改，这个是Library的版本后，每次更新的时候，版本需要不一样
 
 android {
     compileSdkVersion 23
