@@ -34,7 +34,7 @@ public class DateUtils {
         return cal.get(Calendar.MINUTE);//获取分
     }
 
-    public static int getSeond() {
+    public static int getSecond() {
         return cal.get(Calendar.SECOND);//获取秒
     }
 

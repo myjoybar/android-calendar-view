@@ -2,6 +2,7 @@ package com.joybar.librarycalendar.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.TextView;
 
 import com.joybar.librarycalendar.R;
 import com.joybar.librarycalendar.data.CalendarDate;
-import com.joybar.librarycalendar.utils.LunarSolarConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ public class CalendarGridViewAdapter extends BaseAdapter {
 
     public View getView(final int position, View convertView, final ViewGroup parent) {
         ViewHolder viewHolder = null;
-
+        CalendarDate calendarDate = mListData.get(position);
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) parent.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,9 +61,18 @@ public class CalendarGridViewAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.tv_day.setText(mListData.get(position).getDay()+"");
-        String lunarDay = LunarSolarConverter.Lunar.getChinaDayString(mListData.get(position).getLunar().lunarDay);
-        viewHolder.tv_lunar_day.setText(lunarDay);
+        viewHolder.tv_day.setText(calendarDate.getSolar().solarDay+"");
+
+        String str;
+
+        if(!TextUtils.isEmpty(calendarDate.getSolar().solar24Term)){
+            str =   calendarDate.getSolar().solar24Term;
+        }else if(!TextUtils.isEmpty(calendarDate.getSolar().solarFestivalName)){
+            str =   calendarDate.getSolar().solarFestivalName;
+        }else{
+            str = calendarDate.getLunar().getChinaDayString(mListData.get(position).getLunar().lunarDay);
+        }
+        viewHolder.tv_lunar_day.setText(str);
         if(mListData.get(position).isInThisMonth()){
             viewHolder.tv_day.setTextColor(Color.parseColor("#000000"));
         }else{

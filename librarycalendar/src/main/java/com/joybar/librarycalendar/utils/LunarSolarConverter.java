@@ -1,55 +1,21 @@
 package com.joybar.librarycalendar.utils;
 
 
+import com.joybar.librarycalendar.data.Lunar;
+import com.joybar.librarycalendar.data.Solar;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LunarSolarConverter {
 
 
-
-    public static class Lunar {
-        public boolean isleap;
-        public int lunarDay;
-        public int lunarMonth;
-        public int lunarYear;
-        final static String chineseNumber[] =
-                { "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二" };
-
-        public static String getChinaDayString(int day)
-        {
-            String chineseTen[] =
-                    { "初", "十", "廿", "卅" };
-            int n = day % 10 == 0 ? 9 : day % 10 - 1;
-            if (day > 30)
-                return "";
-            if (day == 10)
-                return "初十";
-            else
-                return chineseTen[day / 10] + chineseNumber[n];
-        }
-        @Override
-        public String toString() {
-            return "Lunar [isleap=" + isleap + ", lunarDay=" + lunarDay
-                    + ", lunarMonth=" + lunarMonth + ", lunarYear=" + lunarYear
-                    + "]";
-        }
-
-    }
-
-    public  static  class Solar {
-        public int solarDay;
-        public int solarMonth;
-        public int solarYear;
-
-        @Override
-        public String toString() {
-            return "Solar [solarDay=" + solarDay + ", solarMonth=" + solarMonth
-                    + ", solarYear=" + solarYear + "]";
-        }
-
-
-    }
-    /*
-	 * |----4位闰月|-------------13位1为30天，0为29天|
+/*
+     * |----4位闰月|-------------13位1为30天，0为29天|
 	 */
 
     private static int[] lunar_month_days = {1887, 0x1694, 0x16aa, 0x4ad5,
@@ -116,6 +82,167 @@ public class LunarSolarConverter {
             0x105e45, 0x106039, 0x10624c, 0x106441, 0x106635, 0x106849,
             0x106a3d, 0x106c51, 0x106e47, 0x10703c, 0x10724f, 0x107444,
             0x107638, 0x10784c, 0x107a3f, 0x107c53, 0x107e48};
+
+    /**
+     * 国历节日 *表示放假日
+     */
+    private final static String[] sFtv = {
+            "0101*元旦", "0214 情人节", "0308 妇女节", "0312 植树节",
+            "0315 消费者权益日", "0401 愚人节", "0501*劳动节", "0504 青年节",
+            "0509 郝维节", "0512 护士节", "0601 儿童节", "0701 建党节",
+            "0801 建军节", "0808 父亲节", "0816 燕衔泥节",
+            "0910 教师节", "0928 孔子诞辰", "1001*国庆节", "1006 老人节",
+            "1024 联合国日", "1111 光棍节",
+            "1225 圣诞节",
+    };
+
+    /**
+     * 农历节日 *表示放假日
+     */
+    private final static String[] lFtv = {
+            "0101*春节、弥勒佛诞", "0106 定光佛诞", "0115 元宵节",
+            "0208 释迦牟尼佛出家", "0215 释迦牟尼佛涅槃", "0209 海空上师诞",
+            "0219 观世音菩萨诞", "0221 普贤菩萨诞", "0316 准提菩萨诞",
+            "0404 文殊菩萨诞", "0408 释迦牟尼佛诞", "0415 佛吉祥日",
+            "0505*端午节", "0513 伽蓝菩萨诞", "0603 护法韦驮尊天菩萨诞",
+            "0619 观世音菩萨成道——此日放生、念佛，功德殊胜",
+            "0707 七夕情人节", "0713 大势至菩萨诞", "0715 中元节",
+            "0724 龙树菩萨诞", "0730 地藏菩萨诞", "0815*中秋节",
+            "0822 燃灯佛诞", "0909 重阳节", "0919 观世音菩萨出家纪念日",
+            "0930 药师琉璃光如来诞", "1005 达摩祖师诞", "1107 阿弥陀佛诞",
+            "1208 释迦如来成道日，腊八节", "1224 小年",
+            "1229 华严菩萨诞", "0100*除夕"
+    };
+
+    private final static String[] solarTerm = {
+            "小寒", "大寒", "立春", "雨水", "惊蛰", "春分",
+            "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
+            "小暑", "大暑", "立秋", "处暑", "白露", "秋分",
+            "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
+    };
+    private final static int[] solarTermInfo = {
+            0, 21208, 42467, 63836, 85337, 107014, 128867, 150921,
+            173149, 195551, 218072, 240693, 263343, 285989, 308563, 331033,
+            353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758
+    };
+    private final static Pattern sFreg = Pattern.compile("^(\\d{2})(\\d{2})([\\s\\*])(.+)$");
+    private final static Pattern wFreg = Pattern.compile("^(\\d{2})(\\d)(\\d)([\\s\\*])(.+)$");
+    private static GregorianCalendar utcCal = null;
+
+    public static int toInt(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
+    /**
+     * 返回公历日期的节气字符串
+     *
+     * @return 二十四节气字符串, 若不是节气日, 返回空串(例:冬至)
+     */
+    public static String getTermString(Solar solar) {
+        System.out.println(solar.solarYear + "-" + solar.solarMonth + "-" + solar.solarDay);
+        // 二十四节气
+        int convertMonth = solar.solarMonth - 1;
+        String termString = "";
+        if (getSolarTermDay(solar.solarYear, convertMonth * 2) == solar.solarDay) {
+            termString = LunarSolarConverter.solarTerm[convertMonth * 2];
+        } else if (getSolarTermDay(solar.solarYear, convertMonth * 2 + 1) == solar.solarDay) {
+            termString = LunarSolarConverter.solarTerm[convertMonth * 2 + 1];
+        }
+        return termString;
+    }
+
+    /**
+     * 返回公历年节气的日期
+     *
+     * @param solarYear 指定公历年份(数字)
+     * @param index     指定节气序号(数字,0从小寒算起)
+     * @return 日期(数字, 所在月份的第几天)
+     */
+    private static int getSolarTermDay(int solarYear, int index) {
+        long l = (long) 31556925974.7 * (solarYear - 1900) + solarTermInfo[index] * 60000L;
+        l = l + LunarSolarConverter.UTC(1900, 0, 6, 2, 5, 0);
+        return LunarSolarConverter.getUTCDay(new Date(l));
+    }
+
+    /**
+     * 返回全球标准时间 (UTC) (或 GMT) 的 1970 年 1 月 1 日到所指定日期之间所间隔的毫秒数。
+     *
+     * @param y   指定年份
+     * @param m   指定月份
+     * @param d   指定日期
+     * @param h   指定小时
+     * @param min 指定分钟
+     * @param sec 指定秒数
+     * @return 全球标准时间 (UTC) (或 GMT) 的 1970 年 1 月 1 日到所指定日期之间所间隔的毫秒数
+     */
+    public static synchronized long UTC(int y, int m, int d, int h, int min, int sec) {
+        LunarSolarConverter.makeUTCCalendar();
+        synchronized (utcCal) {
+            utcCal.clear();
+            utcCal.set(y, m, d, h, min, sec);
+            return utcCal.getTimeInMillis();
+        }
+    }
+
+    private static synchronized void makeUTCCalendar() {
+        if (LunarSolarConverter.utcCal == null) {
+            LunarSolarConverter.utcCal = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+        }
+    }
+
+    /**
+     * 取 Date 对象中用全球标准时间 (UTC) 表示的日期
+     *
+     * @param date 指定日期
+     * @return UTC 全球标准时间 (UTC) 表示的日期
+     */
+    public static synchronized int getUTCDay(Date date) {
+        LunarSolarConverter.makeUTCCalendar();
+        synchronized (utcCal) {
+            utcCal.clear();
+            utcCal.setTimeInMillis(date.getTime());
+            return utcCal.get(Calendar.DAY_OF_MONTH);
+        }
+    }
+
+
+    public synchronized static void findFestival(Solar solar, Lunar lunar) {
+//		int sM = this.getSolarMonth();
+//		int sD = this.getSolarDay();
+//		int lM = this.getLunarMonth();
+//		int lD = this.getLunarDay();
+//		int sy = this.getSolarYear();
+        Matcher m;
+        for (int i = 0; i < LunarSolarConverter.sFtv.length; i++) {
+            m = LunarSolarConverter.sFreg.matcher(LunarSolarConverter.sFtv[i]);
+            if (m.find()) {
+                if (solar.solarMonth == LunarSolarConverter.toInt(m.group(1)) && solar.solarDay == LunarSolarConverter.toInt(m.group(2))) {
+                    solar.isSFestival = true;
+                    solar.solarFestivalName = m.group(4);
+                    //if ("*".equals(m.group(3))) this.isHoliday = true;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < LunarSolarConverter.lFtv.length; i++) {
+            m = LunarSolarConverter.sFreg.matcher(LunarSolarConverter.lFtv[i]);
+            if (m.find()) {
+                if (lunar.lunarMonth == LunarSolarConverter.toInt(m.group(1)) && lunar.lunarDay == LunarSolarConverter.toInt(m.group(2))) {
+                    lunar.isLFestival = true;
+                    lunar.lunarFestivalName = m.group(4);
+//					if ("*".equals(m.group(3))) this.isHoliday = true;
+                    break;
+                }
+            }
+        }
+
+
+    }
+
 
     private static int GetBitInt(int data, int length, int shift) {
         return (data & (((1 << length) - 1) << shift)) >> shift;
@@ -228,8 +355,13 @@ public class LunarSolarConverter {
                 lunar.isleap = true;
             }
         }
-
         lunar.lunarDay = lunarD;
+        solar.solar24Term = getTermString(solar);
+        findFestival(solar, lunar);
         return lunar;
+
+
     }
+
+
 }

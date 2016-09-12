@@ -2,7 +2,8 @@ package com.joybar.librarycalendar.controller;
 
 
 import com.joybar.librarycalendar.data.CalendarDate;
-import com.joybar.librarycalendar.data.CalendarSimpleDate;
+import com.joybar.librarycalendar.data.Lunar;
+import com.joybar.librarycalendar.data.Solar;
 import com.joybar.librarycalendar.utils.CalendarUtils;
 import com.joybar.librarycalendar.utils.LunarSolarConverter;
 
@@ -18,7 +19,7 @@ public class CalendarDateController {
 
     public static List<CalendarDate> getCalendarDate(int year, int month) {
         List<CalendarDate> mListDate = new ArrayList<>();
-        List<CalendarSimpleDate> list = null;
+        List<CalendarUtils.CalendarSimpleDate> list = null;
         try {
             list = CalendarUtils.getEverydayOfMonth(year, month);
         } catch (ParseException e) {
@@ -27,15 +28,13 @@ public class CalendarDateController {
         int count = list.size();
 
         for (int i = 0; i < count; i++) {
-            int y = list.get(i).getYear();
-            int m = list.get(i).getMonth();
-            int d = list.get(i).getDay();
-            LunarSolarConverter.Solar solar = new   LunarSolarConverter.Solar();
-            solar.solarYear = y;
-            solar.solarMonth = m;
-            solar.solarDay = d;
-            LunarSolarConverter. Lunar lunar = LunarSolarConverter.SolarToLunar(solar);
-            mListDate.add(new CalendarDate(y, m, d, month == m, false,lunar));
+            Solar solar = new  Solar();
+            solar.solarYear = list.get(i).getYear();
+            solar.solarMonth = list.get(i).getMonth();
+            solar.solarDay = list.get(i).getDay();
+            System.out.println(" solar.solarMonth="+ solar.solarMonth);
+            Lunar lunar = LunarSolarConverter.SolarToLunar(solar);
+            mListDate.add(new CalendarDate( month == list.get(i).getMonth(), false,solar,lunar));
         }
 
         return mListDate;

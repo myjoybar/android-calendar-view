@@ -75,6 +75,7 @@ public class CalendarViewFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         List<CalendarDate> mListDataCalendar ;//日历数据
+        System.out.println(" mMonth="+ mMonth);
         mListDataCalendar = CalendarDateController.getCalendarDate(mYear, mMonth);
         mGridView.setAdapter( new CalendarGridViewAdapter(mListDataCalendar));
         final List<CalendarDate> finalMListDataCalendar = mListDataCalendar;
@@ -84,9 +85,9 @@ public class CalendarViewFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CalendarDate calendarDate = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData().get(position);
-                int year = calendarDate.getYear();
-                int month = calendarDate.getMonth();
-                int day = calendarDate.getDay();
+                int year = calendarDate.getSolar().solarYear;
+                int month = calendarDate.getSolar().solarMonth;
+                int day = calendarDate.getSolar().solarDay;
                 if (finalMListDataCalendar.get(position).isInThisMonth()) {
                     onDateClickListener.OnDateClick(year, month, day);
                 }
@@ -99,9 +100,9 @@ public class CalendarViewFragment extends Fragment {
                 List<CalendarDate> mListData = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData();
                 int count = mListData.size();
                 for (int i = 0; i < count; i++) {
-                    if (mListData.get(i).getDay() == DateUtils.getDay()
-                            && mListData.get(i).getMonth() == DateUtils.getMonth()
-                            && mListData.get(i).getYear() == DateUtils.getYear()) {
+                    if (mListData.get(i).getSolar().solarDay == DateUtils.getDay()
+                            && mListData.get(i).getSolar().solarMonth == DateUtils.getMonth()
+                            && mListData.get(i).getSolar().solarYear == DateUtils.getYear()) {
                         if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMonth()) {
                             mGridView.setItemChecked(i, true);
                         }
