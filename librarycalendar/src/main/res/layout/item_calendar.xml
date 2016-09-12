@@ -25,5 +25,7 @@
         android:paddingTop="2dp"
         android:textColor="#C6C6C6"
         android:textSize="10sp"
+        android:ellipsize="end"
+        android:lines="1"
         tools:text="初八" />
 </LinearLayout>

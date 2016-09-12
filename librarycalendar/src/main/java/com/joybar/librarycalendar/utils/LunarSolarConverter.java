@@ -143,7 +143,7 @@ public class LunarSolarConverter {
      * @return 二十四节气字符串, 若不是节气日, 返回空串(例:冬至)
      */
     public static String getTermString(Solar solar) {
-        System.out.println(solar.solarYear + "-" + solar.solarMonth + "-" + solar.solarDay);
+      //  System.out.println(solar.solarYear + "-" + solar.solarMonth + "-" + solar.solarDay);
         // 二十四节气
         int convertMonth = solar.solarMonth - 1;
         String termString = "";

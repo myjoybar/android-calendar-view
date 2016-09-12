@@ -140,10 +140,7 @@ public class CalendarUtils {
         }
         //重置
         cal.setTime(sdf.parse(year + "-" + month + "-" + 1));
-        System.out.println("begin=" + begin);
-
         // int first = cal.get(Calendar.DAY_OF_WEEK);
-
         int dayOfLastMonth = getDayOfLastMonth(cal);
         int monthOfLastMonth = getMonthOfLastMonth(cal);
         int yearOfLastMonth = getYearOfLastMonth(cal);
@@ -176,7 +173,6 @@ public class CalendarUtils {
                     nextMonth = 1;
                 }
                 CalendarSimpleDate calendarDate = new CalendarSimpleDate(nextYear, nextMonth, i);
-                System.out.println(" nextMonth="+ nextMonth);
                 list.add(calendarDate);
             }
         }

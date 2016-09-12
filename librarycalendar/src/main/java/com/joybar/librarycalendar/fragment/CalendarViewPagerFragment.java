@@ -39,13 +39,9 @@ public class CalendarViewPagerFragment extends Fragment {
     }
     private void initViewPager(View view){
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-
-
         final CalendarViewPagerAdapter myAdapter = new CalendarViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(myAdapter);
         viewPager.setCurrentItem(CalendarViewPagerAdapter.NUM_ITEMS_CURRENT);
-
-
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -67,6 +63,6 @@ public class CalendarViewPagerFragment extends Fragment {
 
 
     public interface OnPageChangeListener {
-        public void OnPageChangeOrClick(int year, int month);
+         void OnPageChangeOrClick(int year, int month);
     }
 }

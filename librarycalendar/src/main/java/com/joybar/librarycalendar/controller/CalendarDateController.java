@@ -32,7 +32,6 @@ public class CalendarDateController {
             solar.solarYear = list.get(i).getYear();
             solar.solarMonth = list.get(i).getMonth();
             solar.solarDay = list.get(i).getDay();
-            System.out.println(" solar.solarMonth="+ solar.solarMonth);
             Lunar lunar = LunarSolarConverter.SolarToLunar(solar);
             mListDate.add(new CalendarDate( month == list.get(i).getMonth(), false,solar,lunar));
         }
