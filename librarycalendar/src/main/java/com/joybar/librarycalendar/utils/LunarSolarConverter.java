@@ -12,9 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LunarSolarConverter {
-
-
-/*
+    /*
      * |----4位闰月|-------------13位1为30天，0为29天|
 	 */
 
@@ -360,8 +358,6 @@ public class LunarSolarConverter {
         findFestival(solar, lunar);
         return lunar;
 
-
     }
-
 
 }

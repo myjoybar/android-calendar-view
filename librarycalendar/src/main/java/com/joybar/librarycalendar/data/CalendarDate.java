@@ -6,18 +6,18 @@ package com.joybar.librarycalendar.data;
 public class CalendarDate {
 
     private Lunar lunar = new Lunar();//农历
-    private  Solar solar = new Solar();//农历
+    private Solar solar = new Solar();//公历
     private boolean isInThisMonth; //是否在当月
     private boolean isSelect;//是否被选中
-    public CalendarDate(int year, int month, int day, boolean isInThisMonth, boolean isSelect, Lunar lunar) {
 
+    public CalendarDate(int year, int month, int day, boolean isInThisMonth, boolean isSelect, Lunar lunar) {
         this.isInThisMonth = isInThisMonth;
         this.isSelect = isSelect;
         this.lunar = lunar;
     }
 
 
-    public CalendarDate( boolean isInThisMonth, boolean isSelect, Solar solar,Lunar lunar) {
+    public CalendarDate(boolean isInThisMonth, boolean isSelect, Solar solar, Lunar lunar) {
         this.isInThisMonth = isInThisMonth;
         this.isSelect = isSelect;
         this.solar = solar;

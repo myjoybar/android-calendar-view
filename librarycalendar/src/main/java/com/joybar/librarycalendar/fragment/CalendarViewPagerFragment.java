@@ -39,10 +39,11 @@ public class CalendarViewPagerFragment extends Fragment {
     }
     private void initViewPager(View view){
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
+        viewPager.setOffscreenPageLimit(2);
         final CalendarViewPagerAdapter myAdapter = new CalendarViewPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(myAdapter);
         viewPager.setCurrentItem(CalendarViewPagerAdapter.NUM_ITEMS_CURRENT);
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 int year = myAdapter.getYearByPosition(position);
