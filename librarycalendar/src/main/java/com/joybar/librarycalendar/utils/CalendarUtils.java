@@ -131,8 +131,6 @@ public class CalendarUtils {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         cal.setTime(sdf.parse(year + "-" + month + "-" + 1));
-
-
         cal.set(Calendar.DAY_OF_MONTH, 1);
         int begin = cal.get(Calendar.DAY_OF_WEEK) - 1;//获取每月号星期几
         if (begin == 0) {

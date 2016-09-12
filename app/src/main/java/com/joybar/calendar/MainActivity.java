@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements
         CalendarViewFragment.OnDateClickListener {
 
     private TextView tv_date;
+    private boolean isChoiceModelSingle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

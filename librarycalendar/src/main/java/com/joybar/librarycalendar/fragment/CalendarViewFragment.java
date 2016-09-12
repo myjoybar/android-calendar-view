@@ -29,8 +29,6 @@ public class CalendarViewFragment extends Fragment {
     private int mMonth;
     private GridView mGridView;
     private OnDateClickListener onDateClickListener;
-    private int mCurrentPosition;
-
     public CalendarViewFragment() {
     }
 
@@ -91,8 +89,6 @@ public class CalendarViewFragment extends Fragment {
                 int day = calendarDate.getSolar().solarDay;
                 if (finalMListDataCalendar.get(position).isInThisMonth()) {
                     onDateClickListener.OnDateClick(year, month, day);
-                    mCurrentPosition = position;
-                    System.out.println("-----mCurrentPosition=" + mCurrentPosition);
                 } else {
                     mGridView.setItemChecked(position, false);
 
@@ -136,7 +132,6 @@ public class CalendarViewFragment extends Fragment {
                             // mListData.get(i).setIsSelect(true);
                             onDateClickListener.OnDateClick(DateUtils.getYear(), DateUtils.getMonth(), DateUtils.getDay());
                             mGridView.setItemChecked(i, true);
-                            mCurrentPosition = i;
                         }
                     }
                 }
@@ -160,7 +155,8 @@ public class CalendarViewFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (!isVisibleToUser) {
             if (null != mGridView) {
-                mGridView.setItemChecked(mCurrentPosition, false);
+               // mGridView.setItemChecked(mCurrentPosition, false);
+                mGridView.clearChoices();
             }
         }
     }

@@ -209,11 +209,6 @@ public class LunarSolarConverter {
 
 
     public synchronized static void findFestival(Solar solar, Lunar lunar) {
-//		int sM = this.getSolarMonth();
-//		int sD = this.getSolarDay();
-//		int lM = this.getLunarMonth();
-//		int lD = this.getLunarDay();
-//		int sy = this.getSolarYear();
         Matcher m;
         for (int i = 0; i < LunarSolarConverter.sFtv.length; i++) {
             m = LunarSolarConverter.sFreg.matcher(LunarSolarConverter.sFtv[i]);
