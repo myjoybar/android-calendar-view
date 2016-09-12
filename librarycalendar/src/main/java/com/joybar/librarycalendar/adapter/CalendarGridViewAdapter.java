@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.joybar.librarycalendar.R;
 import com.joybar.librarycalendar.data.CalendarDate;
+import com.joybar.librarycalendar.utils.LunarSolarConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +62,13 @@ public class CalendarGridViewAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.tv_day.setText(mListData.get(position).getDay()+"");
+        String lunarDay = LunarSolarConverter.Lunar.getChinaDayString(mListData.get(position).getLunar().lunarDay);
+        viewHolder.tv_lunar_day.setText(lunarDay);
         if(mListData.get(position).isInThisMonth()){
             viewHolder.tv_day.setTextColor(Color.parseColor("#000000"));
         }else{
             viewHolder.tv_day.setTextColor(Color.parseColor("#D7D7D7"));
+            viewHolder.tv_lunar_day.setTextColor(Color.parseColor("#D7D7D7"));
 
         }
         return convertView;
@@ -73,8 +77,10 @@ public class CalendarGridViewAdapter extends BaseAdapter {
 
     public static class ViewHolder {
         private TextView tv_day;
+        private TextView tv_lunar_day;
         public ViewHolder(View itemView) {
             tv_day = (TextView) itemView.findViewById(R.id.tv_day);
+            tv_lunar_day = (TextView) itemView.findViewById(R.id.tv_lunar_day);
         }
 
     }

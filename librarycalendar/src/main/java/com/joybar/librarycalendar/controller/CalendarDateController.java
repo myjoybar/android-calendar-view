@@ -4,6 +4,7 @@ package com.joybar.librarycalendar.controller;
 import com.joybar.librarycalendar.data.CalendarDate;
 import com.joybar.librarycalendar.data.CalendarSimpleDate;
 import com.joybar.librarycalendar.utils.CalendarUtils;
+import com.joybar.librarycalendar.utils.LunarSolarConverter;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,7 +30,12 @@ public class CalendarDateController {
             int y = list.get(i).getYear();
             int m = list.get(i).getMonth();
             int d = list.get(i).getDay();
-            mListDate.add(new CalendarDate(y, m, d, month == m, false));
+            LunarSolarConverter.Solar solar = new   LunarSolarConverter.Solar();
+            solar.solarYear = y;
+            solar.solarMonth = m;
+            solar.solarDay = d;
+            LunarSolarConverter. Lunar lunar = LunarSolarConverter.SolarToLunar(solar);
+            mListDate.add(new CalendarDate(y, m, d, month == m, false,lunar));
         }
 
         return mListDate;

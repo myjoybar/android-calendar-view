@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/selector_active_calendar_grid_item"
-    >
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="2dp">
+
     <TextView
         android:id="@+id/tv_day"
         android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="17sp"
         tools:text="10" />
-</FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_lunar_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:paddingTop="2dp"
+        android:textColor="#C6C6C6"
+        android:textSize="10sp"
+        tools:text="初八" />
+</LinearLayout>
