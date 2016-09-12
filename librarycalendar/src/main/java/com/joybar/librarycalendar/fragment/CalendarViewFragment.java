@@ -25,10 +25,14 @@ public class CalendarViewFragment extends Fragment {
 
     private static final String YEAR = "year";
     private static final String MONTH = "month";
+    private static final String CHOICE_MODE_SINGLE = "choice_mode_single";
+    private boolean isChoiceModelSingle;
     private int mYear;
     private int mMonth;
     private GridView mGridView;
     private OnDateClickListener onDateClickListener;
+    private OnDateCancelListener onDateCancelListener;
+
     public CalendarViewFragment() {
     }
 
@@ -41,14 +45,27 @@ public class CalendarViewFragment extends Fragment {
         return fragment;
     }
 
+    public static CalendarViewFragment newInstance(int year, int month, boolean isChoiceModelSingle) {
+        CalendarViewFragment fragment = new CalendarViewFragment();
+        Bundle args = new Bundle();
+        args.putInt(YEAR, year);
+        args.putInt(MONTH, month);
+        args.putBoolean(CHOICE_MODE_SINGLE, isChoiceModelSingle);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
             onDateClickListener = (OnDateClickListener) context;
+            if(!isChoiceModelSingle){
+                //多选
+                onDateCancelListener = (OnDateCancelListener) context;
+            }
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement OnDateClickListener");
+            throw new ClassCastException(context.toString() + "must implement OnDateClickListener or OnDateCancelListener");
         }
     }
 
@@ -58,7 +75,7 @@ public class CalendarViewFragment extends Fragment {
         if (getArguments() != null) {
             mYear = getArguments().getInt(YEAR);
             mMonth = getArguments().getInt(MONTH);
-
+            isChoiceModelSingle = getArguments().getBoolean(CHOICE_MODE_SINGLE, false);
         }
     }
 
@@ -76,45 +93,39 @@ public class CalendarViewFragment extends Fragment {
         mListDataCalendar = CalendarDateController.getCalendarDate(mYear, mMonth);
         mGridView.setAdapter(new CalendarGridViewAdapter(mListDataCalendar));
         final List<CalendarDate> finalMListDataCalendar = mListDataCalendar;
-
-        mGridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
+        if (isChoiceModelSingle) {
+            mGridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
+        } else {
+            mGridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
+        }
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CalendarDate calendarDate = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData().get(position);
-
-                //单选
-                int year = calendarDate.getSolar().solarYear;
-                int month = calendarDate.getSolar().solarMonth;
-                int day = calendarDate.getSolar().solarDay;
-                if (finalMListDataCalendar.get(position).isInThisMonth()) {
-                    onDateClickListener.OnDateClick(year, month, day);
+                if (isChoiceModelSingle) {
+                    //单选
+                    if (finalMListDataCalendar.get(position).isInThisMonth()) {
+                        onDateClickListener.OnDateClick(calendarDate);
+                    } else {
+                        mGridView.setItemChecked(position, false);
+                    }
                 } else {
-                    mGridView.setItemChecked(position, false);
+                    //多选
+                    if (finalMListDataCalendar.get(position).isInThisMonth()) {
+                       // mGridView.getCheckedItemIds()
+                        if(!mGridView.isItemChecked(position)){
+                            onDateCancelListener.OnDateCancel(calendarDate);
+                        } else {
+                            onDateClickListener.OnDateClick(calendarDate);
+                        }
+
+                    } else {
+                        mGridView.setItemChecked(position, false);
+                    }
 
                 }
-//
-//                if(calendarDate.isSelect()){
-//
-//                    mGridView.setItemChecked(position, false);
-//                    calendarDate.setIsSelect(false);
-//                    System.out.println("aaaaaa");
-//                    return;
-//                }else{
-//                    System.out.println("bbbbbb");
-//                    int year = calendarDate.getSolar().solarYear;
-//                    int month = calendarDate.getSolar().solarMonth;
-//                    int day = calendarDate.getSolar().solarDay;
-//                    if (finalMListDataCalendar.get(position).isInThisMonth()) {
-//                        onDateClickListener.OnDateClick(year, month, day);
-//                        calendarDate.setIsSelect(true);
-//                    }else{
-//                        mGridView.setItemChecked(position, false);
-////                        View viewCurrent = parent.getChildAt(position);
-////                        viewCurrent.setBackgroundColor(Color.parseColor("#00FFFFFF"));
-//
-//                    }
-//                }
+
+
 
             }
         });
@@ -130,7 +141,7 @@ public class CalendarViewFragment extends Fragment {
                             && mListData.get(i).getSolar().solarYear == DateUtils.getYear()) {
                         if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMonth()) {
                             // mListData.get(i).setIsSelect(true);
-                            onDateClickListener.OnDateClick(DateUtils.getYear(), DateUtils.getMonth(), DateUtils.getDay());
+                            onDateClickListener.OnDateClick(mListData.get(i));
                             mGridView.setItemChecked(i, true);
                         }
                     }
@@ -155,7 +166,7 @@ public class CalendarViewFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (!isVisibleToUser) {
             if (null != mGridView) {
-               // mGridView.setItemChecked(mCurrentPosition, false);
+                // mGridView.setItemChecked(mCurrentPosition, false);
                 mGridView.clearChoices();
             }
         }
@@ -167,6 +178,9 @@ public class CalendarViewFragment extends Fragment {
     }
 
     public interface OnDateClickListener {
-        void OnDateClick(int year, int month, int day);
+        void OnDateClick(CalendarDate calendarDate);
+    }
+    public interface OnDateCancelListener {
+        void OnDateCancel(CalendarDate calendarDate);
     }
 }

@@ -18,8 +18,21 @@ import com.joybar.librarycalendar.adapter.CalendarViewPagerAdapter;
  */
 public class CalendarViewPagerFragment extends Fragment {
 
+    private static final String CHOICE_MODE_SINGLE="choice_mode_single";
+    private boolean isChoiceModelSingle;
     private ViewPager viewPager;
     private OnPageChangeListener onPageChangeListener;
+
+    public CalendarViewPagerFragment() {
+    }
+
+    public static CalendarViewPagerFragment newInstance(boolean isChoiceModelSingle) {
+        CalendarViewPagerFragment fragment = new CalendarViewPagerFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(CHOICE_MODE_SINGLE, isChoiceModelSingle);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -30,6 +43,14 @@ public class CalendarViewPagerFragment extends Fragment {
             throw new ClassCastException(context.toString() + "must implement OnDateClickListener");
         }
     }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isChoiceModelSingle = getArguments().getBoolean(CHOICE_MODE_SINGLE,false);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,7 +61,7 @@ public class CalendarViewPagerFragment extends Fragment {
     private void initViewPager(View view){
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(2);
-        final CalendarViewPagerAdapter myAdapter = new CalendarViewPagerAdapter(getChildFragmentManager());
+        final CalendarViewPagerAdapter myAdapter = new CalendarViewPagerAdapter(getChildFragmentManager(),isChoiceModelSingle);
         viewPager.setAdapter(myAdapter);
         viewPager.setCurrentItem(CalendarViewPagerAdapter.NUM_ITEMS_CURRENT);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -49,7 +70,7 @@ public class CalendarViewPagerFragment extends Fragment {
                 int year = myAdapter.getYearByPosition(position);
                 int month = myAdapter.getMonthByPosition(position);
                // tv_date.setText(year+"-"+month+"");
-                onPageChangeListener.OnPageChangeOrClick(year,month);
+                onPageChangeListener.OnPageChange(year,month);
             }
             @Override
             public void onPageScrolled(int position, float positionOffset,
@@ -64,6 +85,6 @@ public class CalendarViewPagerFragment extends Fragment {
 
 
     public interface OnPageChangeListener {
-         void OnPageChangeOrClick(int year, int month);
+         void OnPageChange(int year, int month);
     }
 }

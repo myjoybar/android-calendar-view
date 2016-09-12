@@ -17,15 +17,17 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
     public static final int NUM_ITEMS_CURRENT = NUM_ITEMS/2;
     private int mThisMonthPosition = DateUtils.getYear()*12+DateUtils.getMonth()-1;//---100 -position
     private int number = mThisMonthPosition - NUM_ITEMS_CURRENT;
-    public CalendarViewPagerAdapter(FragmentManager fm) {
+    private boolean isChoiceModelSingle;
+    public CalendarViewPagerAdapter(FragmentManager fm,boolean isChoiceModelSingle) {
         super(fm);
+        this.isChoiceModelSingle = isChoiceModelSingle;
     }
 
     @Override
     public Fragment getItem(int position) {
         int year = getYearByPosition(position);
         int month = getMonthByPosition(position);
-        Fragment fragment = CalendarViewFragment.newInstance(year,month);
+        Fragment fragment = CalendarViewFragment.newInstance(year,month,isChoiceModelSingle);
         return  fragment;
     }
 
@@ -34,7 +36,7 @@ public class CalendarViewPagerAdapter extends FragmentStatePagerAdapter {
         return NUM_ITEMS;
     }
 
-    public   int getYearByPosition(int position){
+    public int getYearByPosition(int position){
         int year = (position+number)/12;
         return year;
     }
