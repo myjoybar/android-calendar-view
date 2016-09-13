@@ -124,9 +124,6 @@ public class CalendarViewFragment extends Fragment {
                     }
 
                 }
-
-
-
             }
         });
         mGridView.post(new Runnable() {

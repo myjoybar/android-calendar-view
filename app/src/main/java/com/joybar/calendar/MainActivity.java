@@ -109,5 +109,4 @@ public class MainActivity extends AppCompatActivity implements
         return stringBuffer.toString();
     }
 
-
 }

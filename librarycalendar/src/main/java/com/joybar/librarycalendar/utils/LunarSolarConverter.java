@@ -249,10 +249,11 @@ public class LunarSolarConverter {
                 + (d - 1);
     }
 
+
     /**
-     * @param lunarYear 农历年份
-     * @return String of Ganzhi: 甲子年
-     * Tiangan:甲乙丙丁戊己庚辛壬癸<br/>Dizhi: 子丑寅卯辰巳无为申酉戌亥
+     *
+     * @param lunarYear
+     * @return String of : 甲子年
      */
     public static String lunarYearToGanZhi(int lunarYear) {
         final String[] tianGan = {"甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"};

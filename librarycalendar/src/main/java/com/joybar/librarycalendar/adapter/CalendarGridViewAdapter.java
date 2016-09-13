@@ -66,9 +66,9 @@ public class CalendarGridViewAdapter extends BaseAdapter {
         String str;
 
         if(!TextUtils.isEmpty(calendarDate.getSolar().solar24Term)){
-            str =   calendarDate.getSolar().solar24Term;
+            str =  calendarDate.getSolar().solar24Term;
         }else if(!TextUtils.isEmpty(calendarDate.getSolar().solarFestivalName)){
-            str =   calendarDate.getSolar().solarFestivalName;
+            str = calendarDate.getSolar().solarFestivalName;
         }else{
             str = calendarDate.getLunar().getChinaDayString(mListData.get(position).getLunar().lunarDay);
         }
