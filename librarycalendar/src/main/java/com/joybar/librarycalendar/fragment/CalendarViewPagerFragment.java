@@ -70,7 +70,7 @@ public class CalendarViewPagerFragment extends Fragment {
                 int year = myAdapter.getYearByPosition(position);
                 int month = myAdapter.getMonthByPosition(position);
                // tv_date.setText(year+"-"+month+"");
-                onPageChangeListener.OnPageChange(year,month);
+                onPageChangeListener.onPageChange(year,month);
             }
             @Override
             public void onPageScrolled(int position, float positionOffset,
@@ -85,6 +85,6 @@ public class CalendarViewPagerFragment extends Fragment {
 
 
     public interface OnPageChangeListener {
-         void OnPageChange(int year, int month);
+         void onPageChange(int year, int month);
     }
 }

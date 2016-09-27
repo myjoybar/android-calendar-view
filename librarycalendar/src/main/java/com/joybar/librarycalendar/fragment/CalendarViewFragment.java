@@ -105,7 +105,7 @@ public class CalendarViewFragment extends Fragment {
                 if (isChoiceModelSingle) {
                     //单选
                     if (finalMListDataCalendar.get(position).isInThisMonth()) {
-                        onDateClickListener.OnDateClick(calendarDate);
+                        onDateClickListener.onDateClick(calendarDate);
                     } else {
                         mGridView.setItemChecked(position, false);
                     }
@@ -114,9 +114,9 @@ public class CalendarViewFragment extends Fragment {
                     if (finalMListDataCalendar.get(position).isInThisMonth()) {
                        // mGridView.getCheckedItemIds()
                         if(!mGridView.isItemChecked(position)){
-                            onDateCancelListener.OnDateCancel(calendarDate);
+                            onDateCancelListener.onDateCancel(calendarDate);
                         } else {
-                            onDateClickListener.OnDateClick(calendarDate);
+                            onDateClickListener.onDateClick(calendarDate);
                         }
 
                     } else {
@@ -138,7 +138,7 @@ public class CalendarViewFragment extends Fragment {
                             && mListData.get(i).getSolar().solarYear == DateUtils.getYear()) {
                         if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMonth()) {
                             // mListData.get(i).setIsSelect(true);
-                            onDateClickListener.OnDateClick(mListData.get(i));
+                            onDateClickListener.onDateClick(mListData.get(i));
                             mGridView.setItemChecked(i, true);
                         }
                     }
@@ -175,9 +175,9 @@ public class CalendarViewFragment extends Fragment {
     }
 
     public interface OnDateClickListener {
-        void OnDateClick(CalendarDate calendarDate);
+        void onDateClick(CalendarDate calendarDate);
     }
     public interface OnDateCancelListener {
-        void OnDateCancel(CalendarDate calendarDate);
+        void onDateCancel(CalendarDate calendarDate);
     }
 }

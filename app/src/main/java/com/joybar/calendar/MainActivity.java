@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
     @Override
-    public void OnDateClick(CalendarDate calendarDate) {
+    public void onDateClick(CalendarDate calendarDate) {
 
         int year = calendarDate.getSolar().solarYear;
         int month = calendarDate.getSolar().solarMonth;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnDateCancel(CalendarDate calendarDate) {
+    public void onDateCancel(CalendarDate calendarDate) {
         int count = mListDate.size();
         for (int i = 0; i < count; i++) {
             CalendarDate date = mListDate.get(i);
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void OnPageChange(int year, int month) {
+    public void onPageChange(int year, int month) {
         tv_date.setText(year + "-" + month);
         mListDate.clear();
     }
