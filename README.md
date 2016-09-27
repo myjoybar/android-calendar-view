@@ -14,7 +14,7 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
 # Gradle Dependency
 ####  Add the library to your project build.gradle
 ```gradle
-  compile 'com.joybar.calendar:librarycalendar:1.0.4'
+  compile 'com.joybar.calendar:librarycalendar:1.0.5'
 ```
 ## Sample Usage
 实现OnPageChangeListener和OnDateClickListener接口，如果实现多选，需要实现 OnDateCancelListener
@@ -69,7 +69,7 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
         return true;
     }
     @Override
-    public void OnDateClick(CalendarDate calendarDate) {
+    public void onDateClick(CalendarDate calendarDate) {
 
         int year = calendarDate.getSolar().solarYear;
         int month = calendarDate.getSolar().solarMonth;
@@ -85,7 +85,7 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
     }
 
     @Override
-    public void OnDateCancel(CalendarDate calendarDate) {
+    public void onDateCancel(CalendarDate calendarDate) {
         int count = mListDate.size();
         for (int i = 0; i < count; i++) {
             CalendarDate date = mListDate.get(i);
@@ -98,7 +98,7 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
     }
 
     @Override
-    public void OnPageChange(int year, int month) {
+    public void onPageChange(int year, int month) {
         tv_date.setText(year + "-" + month);
         mListDate.clear();
     }
@@ -127,7 +127,7 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
                 if (isChoiceModelSingle) {
                     //单选
                     if (finalMListDataCalendar.get(position).isInThisMonth()) {
-                        onDateClickListener.OnDateClick(calendarDate);
+                        onDateClickListener.onDateClick(calendarDate);
                     } else {
                         mGridView.setItemChecked(position, false);
                     }
@@ -136,9 +136,9 @@ Easy to use, powerful, easy to expand the android calendar view library.<br />
                     if (finalMListDataCalendar.get(position).isInThisMonth()) {
                        // mGridView.getCheckedItemIds()
                         if(!mGridView.isItemChecked(position)){
-                            onDateCancelListener.OnDateCancel(calendarDate);
+                            onDateCancelListener.onDateCancel(calendarDate);
                         } else {
-                            onDateClickListener.OnDateClick(calendarDate);
+                            onDateClickListener.onDateClick(calendarDate);
                         }
 
                     } else {
