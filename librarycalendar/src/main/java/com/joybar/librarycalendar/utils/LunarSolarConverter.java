@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LunarSolarConverter {
+
+	private static int baseYear = 1901;
     /*
      * |----4位闰月|-------------13位1为30天，0为29天|
 	 */
@@ -81,6 +83,85 @@ public class LunarSolarConverter {
             0x106a3d, 0x106c51, 0x106e47, 0x10703c, 0x10724f, 0x107444,
             0x107638, 0x10784c, 0x107a3f, 0x107c53, 0x107e48};
 
+    private static char[][] sectionalTermYear = {
+            {13, 49, 85, 117, 149, 185, 201, 250, 250},
+            {13, 45, 81, 117, 149, 185, 201, 250, 250},
+            {13, 48, 84, 112, 148, 184, 200, 201, 250},
+            {13, 45, 76, 108, 140, 172, 200, 201, 250},
+            {13, 44, 72, 104, 132, 168, 200, 201, 250},
+            {5, 33, 68, 96, 124, 152, 188, 200, 201},
+            {29, 57, 85, 120, 148, 176, 200, 201, 250},
+            {13, 48, 76, 104, 132, 168, 196, 200, 201},
+            {25, 60, 88, 120, 148, 184, 200, 201, 250},
+            {16, 44, 76, 108, 144, 172, 200, 201, 250},
+            {28, 60, 92, 124, 160, 192, 200, 201, 250},
+            {17, 53, 85, 124, 156, 188, 200, 201, 250}};
+
+	private static char[][] sectionalTermMap = {
+			{7, 6, 6, 6, 6, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 5, 5,
+					5, 5, 5, 4, 5, 5},
+			{5, 4, 5, 5, 5, 4, 4, 5, 5, 4, 4, 4, 4, 4, 4, 4, 4, 3, 4, 4, 4, 3,
+					3, 4, 4, 3, 3, 3},
+			{6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5,
+					5, 5, 4, 5, 5, 5, 5},
+			{5, 5, 6, 6, 5, 5, 5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 4, 4, 5, 5, 4, 4,
+					4, 5, 4, 4, 4, 4, 5},
+			{6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5, 5, 6, 5, 5,
+					5, 5, 4, 5, 5, 5, 5},
+			{6, 6, 7, 7, 6, 6, 6, 7, 6, 6, 6, 6, 5, 6, 6, 6, 5, 5, 6, 6, 5, 5,
+					5, 6, 5, 5, 5, 5, 4, 5, 5, 5, 5},
+			{7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6,
+					7, 7, 6, 6, 6, 7, 7},
+			{8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7,
+					7, 7, 6, 7, 7, 7, 6, 6, 7, 7, 7},
+			{8, 8, 8, 9, 8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7,
+					7, 7, 6, 7, 7, 7, 7},
+			{9, 9, 9, 9, 8, 9, 9, 9, 8, 8, 9, 9, 8, 8, 8, 9, 8, 8, 8, 8, 7, 8,
+					8, 8, 7, 7, 8, 8, 8},
+			{8, 8, 8, 8, 7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7,
+					7, 7, 6, 6, 7, 7, 7},
+			{7, 8, 8, 8, 7, 7, 8, 8, 7, 7, 7, 8, 7, 7, 7, 7, 6, 7, 7, 7, 6, 6,
+					7, 7, 6, 6, 6, 7, 7}};
+
+	private static char[][] principleTermYear = {
+			{13, 45, 81, 113, 149, 185, 201},
+			{21, 57, 93, 125, 161, 193, 201},
+			{21, 56, 88, 120, 152, 188, 200, 201},
+			{21, 49, 81, 116, 144, 176, 200, 201},
+			{17, 49, 77, 112, 140, 168, 200, 201},
+			{28, 60, 88, 116, 148, 180, 200, 201},
+			{25, 53, 84, 112, 144, 172, 200, 201},
+			{29, 57, 89, 120, 148, 180, 200, 201},
+			{17, 45, 73, 108, 140, 168, 200, 201},
+			{28, 60, 92, 124, 160, 192, 200, 201},
+			{16, 44, 80, 112, 148, 180, 200, 201},
+			{17, 53, 88, 120, 156, 188, 200, 201}};
+
+	private static char[][] principleTermMap = {
+			{21, 21, 21, 21, 21, 20, 21, 21, 21, 20, 20, 21, 21, 20, 20, 20,
+					20, 20, 20, 20, 20, 19, 20, 20, 20, 19, 19, 20},
+			{20, 19, 19, 20, 20, 19, 19, 19, 19, 19, 19, 19, 19, 18, 19, 19,
+					19, 18, 18, 19, 19, 18, 18, 18, 18, 18, 18, 18},
+			{21, 21, 21, 22, 21, 21, 21, 21, 20, 21, 21, 21, 20, 20, 21, 21,
+					20, 20, 20, 21, 20, 20, 20, 20, 19, 20, 20, 20, 20},
+			{20, 21, 21, 21, 20, 20, 21, 21, 20, 20, 20, 21, 20, 20, 20, 20,
+					19, 20, 20, 20, 19, 19, 20, 20, 19, 19, 19, 20, 20},
+			{21, 22, 22, 22, 21, 21, 22, 22, 21, 21, 21, 22, 21, 21, 21, 21,
+					20, 21, 21, 21, 20, 20, 21, 21, 20, 20, 20, 21, 21},
+			{22, 22, 22, 22, 21, 22, 22, 22, 21, 21, 22, 22, 21, 21, 21, 22,
+					21, 21, 21, 21, 20, 21, 21, 21, 20, 20, 21, 21, 21},
+			{23, 23, 24, 24, 23, 23, 23, 24, 23, 23, 23, 23, 22, 23, 23, 23,
+					22, 22, 23, 23, 22, 22, 22, 23, 22, 22, 22, 22, 23},
+			{23, 24, 24, 24, 23, 23, 24, 24, 23, 23, 23, 24, 23, 23, 23, 23,
+					22, 23, 23, 23, 22, 22, 23, 23, 22, 22, 22, 23, 23},
+			{23, 24, 24, 24, 23, 23, 24, 24, 23, 23, 23, 24, 23, 23, 23, 23,
+					22, 23, 23, 23, 22, 22, 23, 23, 22, 22, 22, 23, 23},
+			{24, 24, 24, 24, 23, 24, 24, 24, 23, 23, 24, 24, 23, 23, 23, 24,
+					23, 23, 23, 23, 22, 23, 23, 23, 22, 22, 23, 23, 23},
+			{23, 23, 23, 23, 22, 23, 23, 23, 22, 22, 23, 23, 22, 22, 22, 23,
+					22, 22, 22, 22, 21, 22, 22, 22, 21, 21, 22, 22, 22},
+			{22, 22, 23, 23, 22, 22, 22, 23, 22, 22, 22, 22, 21, 22, 22, 22,
+					21, 21, 22, 22, 21, 21, 21, 22, 21, 21, 21, 21, 22}};
     /**
      * 国历节日 *表示放假日
      */
@@ -112,19 +193,18 @@ public class LunarSolarConverter {
             "1229 华严菩萨诞", "0100*除夕"
     };
 
-    private final static String[] solarTerm = {
-            "小寒", "大寒", "立春", "雨水", "惊蛰", "春分",
-            "清明", "谷雨", "立夏", "小满", "芒种", "夏至",
-            "小暑", "大暑", "立秋", "处暑", "白露", "秋分",
-            "寒露", "霜降", "立冬", "小雪", "大雪", "冬至"
-    };
+
+	private static String[] principleTermNames = {"大寒", "雨水", "春分", "谷雨",
+			"小满", "夏至", "大暑", "处暑", "秋分", "霜降", "小雪", "冬至"};
+
+	private static String[] sectionalTermNames = {"小寒", "立春", "惊蛰", "清明",
+			"立夏", "芒种", "小暑", "立秋", "白露", "寒露", "立冬", "大雪"};
     private final static int[] solarTermInfo = {
             0, 21208, 42467, 63836, 85337, 107014, 128867, 150921,
             173149, 195551, 218072, 240693, 263343, 285989, 308563, 331033,
             353350, 375494, 397447, 419210, 440795, 462224, 483532, 504758
     };
     private final static Pattern sFreg = Pattern.compile("^(\\d{2})(\\d{2})([\\s\\*])(.+)$");
-    private final static Pattern wFreg = Pattern.compile("^(\\d{2})(\\d)(\\d)([\\s\\*])(.+)$");
     private static GregorianCalendar utcCal = null;
 
     public static int toInt(String str) {
@@ -135,23 +215,55 @@ public class LunarSolarConverter {
         }
     }
 
-    /**
-     * 返回公历日期的节气字符串
-     *
-     * @return 二十四节气字符串, 若不是节气日, 返回空串(例:冬至)
-     */
-    public static String getTermString(Solar solar) {
-      //  System.out.println(solar.solarYear + "-" + solar.solarMonth + "-" + solar.solarDay);
-        // 二十四节气
-        int convertMonth = solar.solarMonth - 1;
-        String termString = "";
-        if (getSolarTermDay(solar.solarYear, convertMonth * 2) == solar.solarDay) {
-            termString = LunarSolarConverter.solarTerm[convertMonth * 2];
-        } else if (getSolarTermDay(solar.solarYear, convertMonth * 2 + 1) == solar.solarDay) {
-            termString = LunarSolarConverter.solarTerm[convertMonth * 2 + 1];
-        }
-        return termString;
+	/**
+	 * 返回公历日期的节气字符串
+	 *
+	 * @return 二十四节气字符串, 若不是节气日, 返回空串(例:冬至)
+	 */
+	public static String getTermStr(Solar solar) {
+		String termString = "";
+		if (solar.solarDay == sectionalTerm(solar.solarYear, solar.solarMonth)) {
+			termString = sectionalTermNames[solar.solarMonth - 1];
+		} else if (solar.solarDay == principleTerm(solar.solarYear, solar.solarMonth)) {
+			termString = principleTermNames[solar.solarMonth - 1];
+		}
+		return termString;
+	}
+
+
+
+    public static int sectionalTerm(int y, int m) {
+        if (y < 1901 || y > 2100)
+            return 0;
+        int index = 0;
+        int ry = y - baseYear + 1;
+        while (ry >= sectionalTermYear[m - 1][index])
+            index++;
+        int term = sectionalTermMap[m - 1][4 * index + ry % 4];
+        if ((ry == 121) && (m == 4))
+            term = 5;
+        if ((ry == 132) && (m == 4))
+            term = 5;
+        if ((ry == 194) && (m == 6))
+            term = 6;
+        return term;
     }
+
+    public static int principleTerm(int y, int m) {
+        if (y < 1901 || y > 2100)
+            return 0;
+        int index = 0;
+        int ry = y - baseYear + 1;
+        while (ry >= principleTermYear[m - 1][index])
+            index++;
+        int term = principleTermMap[m - 1][4 * index + ry % 4];
+        if ((ry == 171) && (m == 3))
+            term = 21;
+        if ((ry == 181) && (m == 5))
+            term = 21;
+        return term;
+    }
+
 
     /**
      * 返回公历年节气的日期
@@ -216,7 +328,6 @@ public class LunarSolarConverter {
                 if (solar.solarMonth == LunarSolarConverter.toInt(m.group(1)) && solar.solarDay == LunarSolarConverter.toInt(m.group(2))) {
                     solar.isSFestival = true;
                     solar.solarFestivalName = m.group(4);
-                    //if ("*".equals(m.group(3))) this.isHoliday = true;
                     break;
                 }
             }
@@ -227,13 +338,10 @@ public class LunarSolarConverter {
                 if (lunar.lunarMonth == LunarSolarConverter.toInt(m.group(1)) && lunar.lunarDay == LunarSolarConverter.toInt(m.group(2))) {
                     lunar.isLFestival = true;
                     lunar.lunarFestivalName = m.group(4);
-//					if ("*".equals(m.group(3))) this.isHoliday = true;
                     break;
                 }
             }
         }
-
-
     }
 
 
@@ -248,7 +356,6 @@ public class LunarSolarConverter {
         return 365 * y + y / 4 - y / 100 + y / 400 + (m * 306 + 5) / 10
                 + (d - 1);
     }
-
 
     /**
      *
@@ -350,7 +457,7 @@ public class LunarSolarConverter {
             }
         }
         lunar.lunarDay = lunarD;
-        solar.solar24Term = getTermString(solar);
+        solar.solar24Term = getTermStr(solar);
         findFestival(solar, lunar);
         return lunar;
 
