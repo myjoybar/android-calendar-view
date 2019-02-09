@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.joybar.librarycalendar.data.CalendarDate;
+import com.joybar.librarycalendar.data.ChoiceModel;
 import com.joybar.librarycalendar.fragment.CalendarViewFragment;
 import com.joybar.librarycalendar.fragment.CalendarViewPagerFragment;
 
@@ -21,10 +22,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements
         CalendarViewPagerFragment.OnPageChangeListener,
         CalendarViewFragment.OnDateClickListener,
-        CalendarViewFragment.OnDateCancelListener {
+        CalendarViewFragment.OnDateCancelListener,
+        CalendarViewFragment.OnDateDurationSelectedListener{
 
     private TextView tv_date;
-    private boolean isChoiceModelSingle = false;
+    private int choiceModel = ChoiceModel.CHOICE_MODE_SINGLE;
     private List<CalendarDate> mListDate = new ArrayList<>();
 
     @Override
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements
        FragmentManager fm = getSupportFragmentManager();
        FragmentTransaction tx = fm.beginTransaction();
        // Fragment fragment = new CalendarViewPagerFragment();
-       Fragment fragment = CalendarViewPagerFragment.newInstance(isChoiceModelSingle);
+       Fragment fragment = CalendarViewPagerFragment.newInstance(choiceModel);
        tx.replace(R.id.fl_content, fragment);
        tx.commit();
    }
@@ -54,13 +56,18 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_single:
-                isChoiceModelSingle = true;
+                choiceModel = ChoiceModel.CHOICE_MODE_SINGLE;
                 initFragment();
                 break;
             case R.id.menu_multi:
-                isChoiceModelSingle = false;
+                choiceModel = ChoiceModel.CHOICE_MODE_MULTI;
                 initFragment();
                 break;
+            case R.id.menu_duration:
+                choiceModel = ChoiceModel.CHOICE_MODE_DURATION;
+                initFragment();
+                break;
+
             default:
                 break;
         }
@@ -72,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
         int year = calendarDate.getSolar().solarYear;
         int month = calendarDate.getSolar().solarMonth;
         int day = calendarDate.getSolar().solarDay;
-        if (isChoiceModelSingle) {
+        if (choiceModel== ChoiceModel.CHOICE_MODE_SINGLE) {
             tv_date.setText(year + "-" + month + "-" + day);
         } else {
             //System.out.println(calendarDate.getSolar().solarDay);
@@ -109,4 +116,8 @@ public class MainActivity extends AppCompatActivity implements
         return stringBuffer.toString();
     }
 
+    @Override
+    public void OnDateDurationSelected(List<CalendarDate> calendarDateList) {
+
+    }
 }

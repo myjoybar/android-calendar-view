@@ -1,5 +1,7 @@
 package com.joybar.librarycalendar.utils;
 
+import com.joybar.librarycalendar.data.CalendarDate;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -109,7 +111,7 @@ public class CalendarUtils {
      * @param month
      * @return
      */
-    public static int getdataCount(int year, int month) {
+    public static int getDataCount(int year, int month) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month - 1);
@@ -127,7 +129,7 @@ public class CalendarUtils {
      */
     public static List<CalendarSimpleDate> getEverydayOfMonth(int year, int month) throws ParseException {
         List<CalendarSimpleDate> list = new ArrayList<>();
-        int count = getdataCount(year, month); //获取当月的天数
+        int count = getDataCount(year, month); //获取当月的天数
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         cal.setTime(sdf.parse(year + "-" + month + "-" + 1));
@@ -176,5 +178,4 @@ public class CalendarUtils {
         }
         return list;
     }
-
 }

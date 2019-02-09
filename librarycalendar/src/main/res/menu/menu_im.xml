@@ -29,4 +29,9 @@
         android:title="CHOICE_MODE_MULTIPLE"
         app:showAsAction="never|withText" />
 
+    <item
+        android:id="@+id/menu_duration"
+        android:orderInCategory="100"
+        android:title="CHOICE_MODE_DURATION"
+        app:showAsAction="never|withText" />
 </menu>

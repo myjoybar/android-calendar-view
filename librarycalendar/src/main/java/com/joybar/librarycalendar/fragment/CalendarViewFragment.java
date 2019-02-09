@@ -13,8 +13,10 @@ import com.joybar.librarycalendar.R;
 import com.joybar.librarycalendar.adapter.CalendarGridViewAdapter;
 import com.joybar.librarycalendar.controller.CalendarDateController;
 import com.joybar.librarycalendar.data.CalendarDate;
+import com.joybar.librarycalendar.data.ChoiceModel;
 import com.joybar.librarycalendar.utils.DateUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,13 +27,19 @@ public class CalendarViewFragment extends Fragment {
 
     private static final String YEAR = "year";
     private static final String MONTH = "month";
-    private static final String CHOICE_MODE_SINGLE = "choice_mode_single";
-    private boolean isChoiceModelSingle;
+    private static final String CHOICE_MODE = "choice_mode";
+    private int choiceModel;
     private int mYear;
     private int mMonth;
     private GridView mGridView;
     private OnDateClickListener onDateClickListener;
     private OnDateCancelListener onDateCancelListener;
+    private OnDateDurationSelectedListener onDateDurationSelectedListener;
+    private CalendarGridViewAdapter calendarGridViewAdapter;
+    private boolean hasSelectStartData = false;
+    private List<CalendarDate> calendarDateList = new ArrayList<>(0);
+    private int startSelectPosition;
+    private int endSelectPosition;
 
     public CalendarViewFragment() {
     }
@@ -45,12 +53,12 @@ public class CalendarViewFragment extends Fragment {
         return fragment;
     }
 
-    public static CalendarViewFragment newInstance(int year, int month, boolean isChoiceModelSingle) {
+    public static CalendarViewFragment newInstance(int year, int month, int choiceModel) {
         CalendarViewFragment fragment = new CalendarViewFragment();
         Bundle args = new Bundle();
         args.putInt(YEAR, year);
         args.putInt(MONTH, month);
-        args.putBoolean(CHOICE_MODE_SINGLE, isChoiceModelSingle);
+        args.putInt(CHOICE_MODE, choiceModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,13 +67,17 @@ public class CalendarViewFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            onDateClickListener = (OnDateClickListener) context;
-            if(!isChoiceModelSingle){
-                //多选
+            if (choiceModel == ChoiceModel.CHOICE_MODE_SINGLE) {
+                onDateClickListener = (OnDateClickListener) context;
+            } else if (choiceModel == ChoiceModel.CHOICE_MODE_SINGLE) {
                 onDateCancelListener = (OnDateCancelListener) context;
+            } else if (choiceModel == ChoiceModel.CHOICE_MODE_SINGLE) {
+                onDateDurationSelectedListener = (OnDateDurationSelectedListener) context;
             }
+
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement OnDateClickListener or OnDateCancelListener");
+            throw new ClassCastException(context.toString() + "must implement " +
+                    "OnDateClickListener" + " or OnDateCancelListener");
         }
     }
 
@@ -75,12 +87,13 @@ public class CalendarViewFragment extends Fragment {
         if (getArguments() != null) {
             mYear = getArguments().getInt(YEAR);
             mMonth = getArguments().getInt(MONTH);
-            isChoiceModelSingle = getArguments().getBoolean(CHOICE_MODE_SINGLE, false);
+            choiceModel = getArguments().getInt(CHOICE_MODE, ChoiceModel.CHOICE_MODE_SINGLE);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         mGridView = (GridView) view.findViewById(R.id.gv_calendar);
         return view;
@@ -91,9 +104,10 @@ public class CalendarViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         List<CalendarDate> mListDataCalendar;//日历数据
         mListDataCalendar = CalendarDateController.getCalendarDate(mYear, mMonth);
-        mGridView.setAdapter(new CalendarGridViewAdapter(mListDataCalendar));
+        mGridView.setAdapter(calendarGridViewAdapter = new CalendarGridViewAdapter
+                (mListDataCalendar));
         final List<CalendarDate> finalMListDataCalendar = mListDataCalendar;
-        if (isChoiceModelSingle) {
+        if (isChoiceModelSingle()) {
             mGridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
         } else {
             mGridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
@@ -101,51 +115,69 @@ public class CalendarViewFragment extends Fragment {
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CalendarDate calendarDate = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData().get(position);
-                if (isChoiceModelSingle) {
-                    //单选
-                    if (finalMListDataCalendar.get(position).isInThisMonth()) {
+                CalendarDate calendarDate = ((CalendarGridViewAdapter) mGridView.getAdapter())
+                        .getListData().get(position);
+                if (choiceModel == ChoiceModel.CHOICE_MODE_SINGLE) {
+                    if (null != onDateClickListener) {
                         onDateClickListener.onDateClick(calendarDate);
-                    } else {
-                        mGridView.setItemChecked(position, false);
                     }
-                } else {
-                    //多选
-                    if (finalMListDataCalendar.get(position).isInThisMonth()) {
-                       // mGridView.getCheckedItemIds()
-                        if(!mGridView.isItemChecked(position)){
+                } else if (choiceModel == ChoiceModel.CHOICE_MODE_MULTI) {
+                    if (!mGridView.isItemChecked(position)) {
+                        if (null != onDateCancelListener) {
                             onDateCancelListener.onDateCancel(calendarDate);
-                        } else {
+                        }
+
+                    } else {
+                        if (null != onDateClickListener) {
                             onDateClickListener.onDateClick(calendarDate);
                         }
 
-                    } else {
-                        mGridView.setItemChecked(position, false);
                     }
+                } else if (choiceModel == ChoiceModel.CHOICE_MODE_DURATION) {
+                    if (!hasSelectStartData) {
+                        hasSelectStartData = true;
+                        startSelectPosition = position;
+                    } else {
+                        calendarDateList.clear();
+                        endSelectPosition = position;
+                        for (int i = startSelectPosition; i < endSelectPosition; i++) {
+                            mGridView.setItemChecked(i, true);
+                            calendarDateList.add(calendarGridViewAdapter.getListData().get(i));
+                        }
+
+                    }
+
 
                 }
             }
         });
-        mGridView.post(new Runnable() {
-            @Override
-            public void run() {
-                //需要默认选中当天
-                List<CalendarDate> mListData = ((CalendarGridViewAdapter) mGridView.getAdapter()).getListData();
-                int count = mListData.size();
-                for (int i = 0; i < count; i++) {
-                    if (mListData.get(i).getSolar().solarDay == DateUtils.getDay()
-                            && mListData.get(i).getSolar().solarMonth == DateUtils.getMonth()
-                            && mListData.get(i).getSolar().solarYear == DateUtils.getYear()) {
-                        if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMonth()) {
-                            // mListData.get(i).setIsSelect(true);
-                            onDateClickListener.onDateClick(mListData.get(i));
-                            mGridView.setItemChecked(i, true);
+
+        if (choiceModel != ChoiceModel.CHOICE_MODE_DURATION) {
+            mGridView.post(new Runnable() {
+                @Override
+                public void run() {
+                    //需要默认选中当天
+                    List<CalendarDate> mListData = ((CalendarGridViewAdapter) mGridView
+                            .getAdapter()).getListData();
+                    int count = mListData.size();
+                    for (int i = 0; i < count; i++) {
+                        if (mListData.get(i).getSolar().solarDay == DateUtils.getDay() &&
+                                mListData.get(i).getSolar().solarMonth == DateUtils.getMonth() &&
+                                mListData.get(i).getSolar().solarYear == DateUtils.getYear()) {
+                            if (null != mGridView.getChildAt(i) && mListData.get(i).isInThisMonth
+                                    ()) {
+                                // mListData.get(i).setIsSelect(true);
+                                if (null != onDateClickListener) {
+                                    onDateClickListener.onDateClick(mListData.get(i));
+                                }
+                                mGridView.setItemChecked(i, true);
+                            }
                         }
                     }
-                }
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override
@@ -177,7 +209,17 @@ public class CalendarViewFragment extends Fragment {
     public interface OnDateClickListener {
         void onDateClick(CalendarDate calendarDate);
     }
+
     public interface OnDateCancelListener {
         void onDateCancel(CalendarDate calendarDate);
+    }
+
+
+    public interface OnDateDurationSelectedListener {
+        void OnDateDurationSelected(List<CalendarDate> calendarDateList);
+    }
+
+    boolean isChoiceModelSingle() {
+        return choiceModel == ChoiceModel.CHOICE_MODE_SINGLE;
     }
 }

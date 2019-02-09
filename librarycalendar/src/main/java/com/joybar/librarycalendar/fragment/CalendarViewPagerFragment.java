@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.joybar.librarycalendar.R;
 import com.joybar.librarycalendar.adapter.CalendarViewPagerAdapter;
+import com.joybar.librarycalendar.data.ChoiceModel;
 
 
 /**
@@ -19,17 +20,17 @@ import com.joybar.librarycalendar.adapter.CalendarViewPagerAdapter;
 public class CalendarViewPagerFragment extends Fragment {
 
     private static final String CHOICE_MODE_SINGLE="choice_mode_single";
-    private boolean isChoiceModelSingle;
+    private int choiceModel;
     private ViewPager viewPager;
     private OnPageChangeListener onPageChangeListener;
 
     public CalendarViewPagerFragment() {
     }
 
-    public static CalendarViewPagerFragment newInstance(boolean isChoiceModelSingle) {
+    public static CalendarViewPagerFragment newInstance(int choiceModel) {
         CalendarViewPagerFragment fragment = new CalendarViewPagerFragment();
         Bundle args = new Bundle();
-        args.putBoolean(CHOICE_MODE_SINGLE, isChoiceModelSingle);
+        args.putInt(CHOICE_MODE_SINGLE, choiceModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,7 +48,7 @@ public class CalendarViewPagerFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isChoiceModelSingle = getArguments().getBoolean(CHOICE_MODE_SINGLE,false);
+            choiceModel = getArguments().getInt(CHOICE_MODE_SINGLE, ChoiceModel.CHOICE_MODE_SINGLE);
         }
     }
 
@@ -61,7 +62,7 @@ public class CalendarViewPagerFragment extends Fragment {
     private void initViewPager(View view){
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(2);
-        final CalendarViewPagerAdapter myAdapter = new CalendarViewPagerAdapter(getChildFragmentManager(),isChoiceModelSingle);
+        final CalendarViewPagerAdapter myAdapter = new CalendarViewPagerAdapter(getChildFragmentManager(),choiceModel);
         viewPager.setAdapter(myAdapter);
         viewPager.setCurrentItem(CalendarViewPagerAdapter.NUM_ITEMS_CURRENT);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
